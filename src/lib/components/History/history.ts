@@ -4,7 +4,6 @@ import { persist, localStorage } from '$lib/util/persist';
 import { generateSlug } from 'random-word-slugs';
 import type { HistoryEntry, HistoryType, Optional } from '$lib/types';
 import { v4 as uuidV4 } from 'uuid';
-import { logEvent } from '$lib/util/stats';
 
 const MAX_AUTO_HISTORY_LENGTH = 30;
 
@@ -76,14 +75,12 @@ export const addHistoryEntry = (entryToAdd: Optional<HistoryEntry, 'id'>): void 
   }
 
   manualHistoryStore.update((entries) => [entry, ...entries]);
-  logEvent('history', { action: 'save' });
 };
 
 export const clearHistoryData = (idToClear?: string): void => {
   (get(historyModeStore) === 'auto' ? autoHistoryStore : manualHistoryStore).update((entries) => {
     if (get(historyModeStore) !== 'loader') {
       entries = entries.filter(({ id }) => idToClear && id != idToClear);
-      logEvent('history', { action: 'clear', type: idToClear ? 'single' : 'all' });
     }
     return entries;
   });
@@ -120,12 +117,6 @@ export const restoreHistory = (data: HistoryEntry[]) => {
         entries.length - entryCount
       } duplicates.`
     );
-    logEvent('history', {
-      action: 'restore',
-      success: entryCount,
-      invalid: invalidEntryCount,
-      duplicates: entries.length - entryCount
-    });
   } else {
     alert('No valid entries found.');
   }

@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
   import Card from '$lib/components/Card/Card.svelte';
   import { waitForRender } from '$lib/util/autoSync';
   import { env } from '$lib/util/env';
   import { pakoSerde } from '$lib/util/serde';
   import { stateStore } from '$lib/util/state';
-  import { logEvent } from '$lib/util/stats';
   import { version as FAVersion } from '@fortawesome/fontawesome-free/package.json';
   import dayjs from 'dayjs';
   import { toBase64 } from 'js-base64';
@@ -126,61 +124,26 @@ ${svgString}`);
 
   const onCopyClipboard = async (event: Event) => {
     await exportImage(event, clipboardCopy);
-    logEvent('copyClipboard');
   };
 
   const onDownloadPNG = async (event: Event) => {
     await exportImage(event, downloadImage);
-    logEvent('download', {
-      type: 'png'
-    });
   };
 
   const onDownloadSVG = () => {
     simulateDownload(getFileName('svg'), `data:image/svg+xml;base64,${getBase64SVG()}`);
-    logEvent('download', {
-      type: 'svg'
-    });
-  };
-
-  const onCopyMarkdown = () => {
-    document.querySelector<HTMLInputElement>('#markdown')?.select();
-    document.execCommand('Copy');
-    logEvent('copyMarkdown');
-  };
-
-  let gistURL = $state('');
-  stateStore.subscribe(({ loader }) => {
-    if (loader?.type === 'gist') {
-      // @ts-expect-error Gist will have url
-      gistURL = loader.config.url;
-    }
-  });
-
-  const loadGist = () => {
-    if (!gistURL) {
-      alert('Please enter a Gist URL first');
-    }
-    window.location.href = `${window.location.pathname}?gist=${gistURL}`;
-    logEvent('loadGist');
   };
 
   let iUrl: string | undefined = $state();
   let svgUrl: string | undefined = $state();
   let krokiUrl: string | undefined = $state();
-  let mdCode: string | undefined = $state();
   let imagemodeselected = $state('auto');
   let userimagesize = $state(1080);
 
-  let isNetlify = $state(false);
-  if (browser && ['mermaid.live', 'netlify'].some((path) => window.location.host.includes(path))) {
-    isNetlify = true;
-  }
   stateStore.subscribe(({ code, serialized }) => {
     iUrl = `${rendererUrl}/img/${serialized}?type=png`;
     svgUrl = `${rendererUrl}/svg/${serialized}`;
     krokiUrl = `${krokiRendererUrl}/mermaid/svg/${pakoSerde.serialize(code)}`;
-    mdCode = `[![](${iUrl})](${window.location.protocol}//${window.location.host}${window.location.pathname}#${serialized})`;
   });
 </script>
 
@@ -241,35 +204,5 @@ ${svgString}`);
           bind:value={userimagesize} />
       {/if}
     </div>
-
-    {#if rendererUrl}
-      <div class="flex w-full items-center gap-2">
-        <input class="input" id="markdown" type="text" value={mdCode} onclick={onCopyMarkdown} />
-        <label for="markdown">
-          <button class="btn btn-primary btn-md flex-auto" onclick={onCopyMarkdown}>
-            Copy Markdown
-          </button>
-        </label>
-      </div>
-    {/if}
-
-    <div class="flex w-full items-center gap-2">
-      <input
-        class="input"
-        id="gist"
-        type="text"
-        bind:value={gistURL}
-        placeholder="Enter Gist URL" />
-      <label for="gist">
-        <button class="btn btn-primary btn-md flex-auto" onclick={loadGist}> Load Gist </button>
-      </label>
-    </div>
-    {#if isNetlify}
-      <div class="flex w-full items-center justify-center">
-        <a class="link text-sm text-gray-500 underline" href="https://netlify.com">
-          This site is powered by Netlify
-        </a>
-      </div>
-    {/if}
   </div>
 </Card>

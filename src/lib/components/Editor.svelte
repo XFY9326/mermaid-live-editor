@@ -12,7 +12,6 @@
   import { initEditor } from '$lib/util/monacoExtra';
   import { sanitizeText } from '$lib/util/sanitize';
   import { stateStore, updateCode, updateConfig } from '$lib/util/state';
-  import { logEvent } from '$lib/util/stats';
   import { themeStore } from '$lib/util/theme';
   import { errorDebug, syncDiagram } from '$lib/util/util';
   import * as monaco from 'monaco-editor';
@@ -105,9 +104,6 @@
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
       run: function () {
         syncDiagram();
-        logEvent('renderDiagram', {
-          method: 'keyboardShortcut'
-        });
       }
     });
     monaco.editor.setTheme($themeStore.isDark ? 'mermaid-dark' : 'mermaid');

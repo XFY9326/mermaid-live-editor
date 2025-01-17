@@ -5,7 +5,6 @@
   import type { HistoryEntry, HistoryType, State, Tab } from '$lib/types';
   import { notify, prompt } from '$lib/util/notify';
   import { getStateString, inputStateStore } from '$lib/util/state';
-  import { logEvent } from '$lib/util/stats';
   import dayjs from 'dayjs';
   import dayjsRelativeTime from 'dayjs/plugin/relativeTime';
   import { onMount } from 'svelte';
@@ -49,9 +48,6 @@
     a.download = `mermaid-history-${dayjs().format('YYYY-MM-DD-HHmmss')}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    logEvent('history', {
-      action: 'download'
-    });
   };
 
   const uploadHistory = () => {

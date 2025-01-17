@@ -3,7 +3,6 @@
   import { recordRenderTime, shouldRefreshView } from '$lib/util/autoSync';
   import { render as renderDiagram } from '$lib/util/mermaid';
   import { inputStateStore, stateStore, updateCodeStore } from '$lib/util/state';
-  import { logEvent, saveStatistics } from '$lib/util/stats';
   import { cmdKey } from '$lib/util/util';
   import type { MermaidConfig } from 'mermaid';
   import { onMount } from 'svelte';
@@ -29,7 +28,6 @@
     const pan = pzoom.getPan();
     const zoom = pzoom.getZoom();
     updateCodeStore({ pan, zoom });
-    logEvent('panZoom');
   };
 
   const handlePanZoom = (state: State) => {
@@ -145,7 +143,6 @@
       error = true;
     }
     const renderTime = Date.now() - startTime;
-    saveStatistics({ code, renderTime, isRough: state.rough });
     recordRenderTime(renderTime, () => {
       $inputStateStore.updateDiagram = true;
     });

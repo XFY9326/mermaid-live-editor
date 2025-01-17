@@ -1,6 +1,5 @@
 <script lang="ts">
   import { base } from '$app/paths';
-  import { loadingStateStore } from '$lib/util/loading';
   import { toggleDarkTheme } from '$lib/util/state';
   import { setTheme, themeStore } from '$lib/util/theme';
   import { initHandler } from '$lib/util/util';
@@ -51,27 +50,7 @@
   {@render children?.()}
 </main>
 
-{#if $loadingStateStore.loading}
-  <div
-    class="absolute left-0 top-0 z-50 flex h-screen w-screen justify-center bg-gray-600 align-middle opacity-50">
-    <div class="my-auto text-4xl font-bold text-indigo-100">
-      <div class="loader mx-auto"></div>
-      <div>{$loadingStateStore.message}</div>
-    </div>
-  </div>
-{/if}
-
 <style>
-  .loader {
-    border: 0.45em solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 0.45em solid #6365f1;
-    width: 3em;
-    height: 3em;
-    -webkit-animation: spin 2s linear infinite; /* Safari */
-    animation: spin 2s linear infinite;
-  }
-
   /* Safari */
   @-webkit-keyframes spin {
     0% {
