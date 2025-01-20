@@ -18,9 +18,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Get release version
-        run: |
-          RELEASE_VERSION=$([ "${{ github.ref_name }}" = "master" ] && echo "latest" || echo "nightly")
-          echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
+        run: echo "RELEASE_VERSION=latest" >> "${GITHUB_ENV}"
       - uses: docker/metadata-action@v5
         id: meta
         with:
