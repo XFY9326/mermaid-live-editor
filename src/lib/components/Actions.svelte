@@ -4,11 +4,9 @@
   import { env } from '$lib/util/env';
   import { pakoSerde } from '$lib/util/serde';
   import { stateStore } from '$lib/util/state';
-  import { version as FAVersion } from '@fortawesome/fontawesome-free/package.json';
+  import FONT_AWESOME_URL from '@fortawesome/fontawesome-free/css/all.min.css?url';
   import dayjs from 'dayjs';
   import { toBase64 } from 'js-base64';
-
-  const FONT_AWESOME_URL = `https://cdnjs.cloudflare.com/ajax/libs/font-awesome/${FAVersion}/css/all.min.css`;
 
   const { krokiRendererUrl, rendererUrl } = env;
   type Exporter = (context: CanvasRenderingContext2D, image: HTMLImageElement) => () => void;

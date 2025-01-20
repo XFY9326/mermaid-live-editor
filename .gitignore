@@ -13,3 +13,6 @@ yarn-error.log
 /cypress/videos
 /cypress/screenshots
 .env.local
+/docs
+/.idea
+/vite.config.js.timestamp*
